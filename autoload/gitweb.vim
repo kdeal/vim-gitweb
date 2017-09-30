@@ -53,12 +53,12 @@ function! gitweb#fugitive_url(opts, ...) abort
             let url .= ';h='.a:opts.repo.git_chomp('hash-object', a:opts.path)
         else
             try
-                let url .= ';h=' . a:opts.repo.rev_parse((a:opts.commit == '' ? 'HEAD' : ':' . a:opts.commit) . ':' . a:opts.path)
+                let url .= ';h=' . a:opts.repo.rev_parse((a:opts.commit == '' ? 'HEAD' : a:opts.commit) . ':' . a:opts.path)
             catch /^fugitive:/
-                call s:throw('fugitive: cannot browse uncommitted file')
+                throw 'gitweb: cannot browse uncommitted file'
             endtry
         endif
-        let root .= ';hb=' . matchstr(a:opts.repo.head_ref(),'[^ ]\+$')
+        let url .= ';hb=' . matchstr(a:opts.repo.head_ref(),'[^ ]\+$')
     endif
 
     if a:opts.path !=# ''
